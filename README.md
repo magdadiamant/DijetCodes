@@ -19,4 +19,4 @@ inputs: padX_margin_V3.root
 #
 Figure 13.
 Script: Plot_Combined_inclusive_Robert.C
-inputs: HISTOS_2016_17_19_M4J_1p5_alpha0p1.root, DijetFitResult_PFDijet2017_4J_alphabin1_.root, QCD2017_.root,ResonanceShapes_*
+inputs: HISTOS_2016_17_19_M4J_1p5_alpha0p1.root, DijetFitResult_PFDijet2017_4J_alphabin1_.root, QCD2017_.root,ResonanceShapes.root
