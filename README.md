@@ -15,7 +15,7 @@ inputs: HISTOS_4J_Alldata_SR_alphabinX.root, ResonanceShapes*.root
 #
 Figure 7.
 Scripts: Plot_AllPulls.C
-inputs: padX_margin_V3.root
+inputs: padX_margin_V3.root (from test.C)
 #
 Figure 14.
 Script: Plot_Combined_inclusive_Robert.C
