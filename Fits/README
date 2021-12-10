@@ -1,6 +1,6 @@
 Background, Signal plus Background fits and Envelope method implementation/test.
 
-1) Setup Release + Download from github combine+DijetAnalyzer
+--Setup Release + Download from github combine+DijetAnalyzer
 
 
 mkdir TEST_4JETS
@@ -14,10 +14,13 @@ cd CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit
 scram b -j 8
 
 
-1) Background only fits:
+-- Background only fits:
 code: run_Bonlyfit.sh
-2) write datacards (S+B Fits):
+--write datacards (S+B Fits):
 code: run_writeDatacards_multi_alpha0p25.sh
+
+--Fisher test:
+code: fisher_Dim.C: using x^2 instead of RSS: the x^2 are calculated from the b-only fits (see above)
 
 
 
