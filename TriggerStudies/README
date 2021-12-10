@@ -1,9 +1,9 @@
 In order to perform the trigger efficiency studies we run two different analyzers.
-The first one is the standard one:
+The first one is the standard one: analysisClass_mainDijetSelection_trigger_JetHT.C (and an example of cutfile: cutFile_mainDijetSelection_trigger_JetHT_2018A.txt )
 input: big trees of JetHT dataset
 output: reduced trees that save the histograms that will be used in the trigger studies (more specifically the histograms that were filled with the requirement of the OR of the unprescaled triggers  will be used to identify the 1/sqrt (N) of the JetHT dataset in each bin.
 
-The second one:
+The second one:analysisClass_mainDijetSelection_trigger_SingleMuon.C (and an example of cutfile:cutFile_mainDijetSelection_trigger_SingleMuon_2018A.txt)
 input: big trees of SingleMuon dataset
 output: educed trees that save the histograms that will be used in the trigger studies (more specifically we save the histograms that were filled with the requirement of the Mu50 (denominator) and the OR of unprescaled triggers && Mu50 (numerator)
 
