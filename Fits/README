@@ -1,1 +1,108 @@
+Background, Signal plus Background fits and Envelope
+
+1) Setup Release + Download from github combine+DijetAnalyzer
+
+
+mkdir TEST_4JETS
+export SCRAM_ARCH=slc7_amd64_gcc700
+cmsrel CMSSW_10_2_13
+cd CMSSW_10_2_13/src
+cmsenv
+git clone https://github.com/CMSDIJET/DijetRootTreeAnalyzer CMSDIJET/DijetRootTreeAnalyzer
+git clone -b dijetpdf_102X https://github.com/CMSDIJET/HiggsAnalysis-CombinedLimit HiggsAnalysis/CombinedLimit
+cd CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit
+scram b -j 8
+
+
+1) Background only fits:
+code: run_Bonlyfit.sh
+2) write datacards (S+B Fits):
+code: run_writeDatacards_multi_alpha0p25.sh
+
+
+
+Envelope method/test:
+1) To Make Datacards you will need the following inputs:
+
+cd TEST_4JETS/CMSSW_10_2_13/src/CMSDIJET/DijetRootTreeAnalyzer
+
+mkdir inputs/MinDDR
+mkdir MULTI
+mkdir FourjetMinDR_M2Jgt0p9_2016v11_2017v32_2018v10
+
+
+
+a)cp WriteDataCard_4J.py python/
+b)cp fourjet_DATA_multipdf.config config/
+c)cp histos_4J_2016v11_17v32_18v10.root inputs/
+d)cp ResonanceShapes_qq_13TeV_Spring16.root inputs/MinDDR/
+e)cp DijetFitResults_PFDijet2017_4J.root FourjetMinDR_M2Jgt0p9_2016v11_2017v32_2018v10/
+
+
+
+2) Make Datacards (save in MULTI dir): in 10_2_X i observed an error while running (this was not  in 7_4, but results are identical in terms of datacards + significance, but need to be fixed)
+
+cd TEST_4JETS/CMSSW_10_2_13/src/CMSDIJET/DijetRootTreeAnalyzer
+
+python python/WriteDataCard_4J_envelope.py -b PFDijet2017_4J -c config/fourjet_DATA_multipdf.config  -m Suu --mass 8000 -i FourjetMinDR_M2Jgt0p9_2016v11_2017v32_2018v10/DijetFitResults_PFDijet2017_4J.root inputs/histos_4J_2016v11_17v32_18v10.root inputs/MinDDR/ResonanceShapes_qq_13TeV_Spring16.root --jesUp inputs/MinDDR/ResonanceShapes_qq_13TeV_Spring16.root --jesDown inputs/MinDDR/ResonanceShapes_qq_13TeV_Spring16.root --jerUp inputs/MinDDR/ResonanceShapes_qq_13TeV_Spring16.root -d MULTI/ --xsec 0.01 --lumi 137000 --multi
+
+
+3) a)Calculate Significance
+
+envelope: 
+
+combine -M Significance MULTI/dijet_combine_Suu_8000_lumi-137.000_PFDijet2017_4J.txt -n MULTI --rMax 2
+
+(check significance for each function: 
+combine -M Significance MULTI/dijet_combine_Suu_8000_lumi-137.000_PFDijet2017_4J.txt -n MULTI --rMax 2 --freezeParameters pdf_index --setParameters pdf_index=0 (or 1))
+
+
+b) Limits
+
+envelope: 
+
+combine -M AsymptoticLimits  MULTI/dijet_combine_Suu_8000_lumi-137.000_PFDijet2017_4J.txt -n test --setParameterRanges r=0,2. --saveWorkspace   --cminDefaultMinimizerTolerance 0.00100 --cminDefaultMinimizerStrategy 2
+
+  
+
+4) Create higgsCombine*root that will be used later to plot -2DNLL (and check the envelope)
+
+
+5) Envelope:
+combine -M MultiDimFit -d MULTI/dijet_combine_Suu_8000_lumi-137.000_PFDijet2017_4J.txt --algo grid --setParameterRanges r=0,0.02 --cminDefaultMinimizerStrategy 0 --saveNLL -n Envelope
+--X-rtd REMOVE_CONSTANT_ZERO_POINT=1 --points 400
+
+b) ATLAS pdf index 0:
+combine -M MultiDimFit -d MULTI/dijet_combine_Suu_8000_lumi-137.000_PFDijet2017_4J.txt --algo grid --setParameterRanges r=0,0.02 --cminDefaultMinimizerStrategy 0 --saveNLL
+--freezeParameters pdf_index --setParameters pdf_index=0 -n fixed_pdf_0 --X-rtd REMOVE_CONSTANT_ZERO_POINT=1 --points 400
+
+c) Dijet pdf index 1:
+combine -M MultiDimFit -d MULTI/dijet_combine_Suu_8000_lumi-137.000_PFDijet2017_4J.txt --algo grid --setParameterRanges r=0,0.02 --cminDefaultMinimizerStrategy 0 --saveNLL
+--freezeParameters pdf_index --setParameters pdf_index=1 -n fixed_pdf_1 --X-rtd REMOVE_CONSTANT_ZERO_POINT=1 --points 400
+
+
+
+in root:
+TFile f("higgsCombineEnvelope.MultiDimFit.mH120.root")
+TFile f2("higgsCombinefixed_pdf_0.MultiDimFit.mH120.root")
+TFile f3("higgsCombinefixed_pdf_1.MultiDimFit.mH120.root")
+
+f.cd();
+f2.cd();
+limit->SetMarkerColor(2);
+f3.cd();
+limit->SetMarkerColor(4);
+
+f2.cd();
+limit->Draw("(deltaNLL+nll0+nll):r")
+f3.cd();
+limit->Draw("(deltaNLL+nll0+nll):r","","same");
+f.cd();
+limit->Draw("(deltaNLL+nll0+nll):r","","same");
+
+
+
+
+
+
 
