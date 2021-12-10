@@ -1,0 +1,4 @@
+.x plot_comparison.C
+input: histogram of the data HISTOS_2016_17_19_M4J_1p6.root
+input: histogram of the MC : QCD2017_.root
+output: png and pdf filed of Data vs MC comparisons
